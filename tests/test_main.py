@@ -89,7 +89,7 @@ def test_category_without_products():
 
 
 # ---------- Product ----------
-def test_product_init(product_samsung):
+def test_product_initt(product_samsung):
     assert product_samsung.name == "Samsung Galaxy S23 Ultra"
     assert product_samsung.description == "256GB, Серый цвет, 200MP камера"
     assert product_samsung.price == 180000.0
@@ -107,7 +107,6 @@ def test_product_init(product_samsung):
     ],
 )
 def test_product_price_setter(product_samsung, monkeypatch, capsys, new_price, expected, confirm, should_change):
-    old_price = product_samsung.price
     if confirm is not None:
         monkeypatch.setattr("builtins.input", lambda _: confirm)
     product_samsung.price = new_price
