@@ -49,6 +49,9 @@ class Product:
             quantity=product_dict["quantity"],
         )
 
+    def __str__(self):
+        return f'{self.name}, {self.price}. Остаток: {self.quantity} шт.'
+
 
 class Category:
     """Категория техники и ее описание"""
@@ -72,4 +75,4 @@ class Category:
 
     @property
     def products(self):
-        return [f"{p.name}, {p.price}. Остаток: {p.quantity} шт.\n" for p in self.__products]
+        return [f"{p.name}, {p.price}. Остаток: {p.quantity} шт." for p in self.__products]
