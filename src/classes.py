@@ -76,3 +76,10 @@ class Category:
     @property
     def products(self):
         return [f"{p.name}, {p.price}. Остаток: {p.quantity} шт." for p in self.__products]
+
+    def __str__(self):
+        product_quantity = 0
+        for p in self.__products:
+            product_quantity += p.quantity
+        return f"{self.name}, количество продуктов: {product_quantity}"
+
