@@ -18,9 +18,9 @@ def test_category_initialization(category_smartphones, product_samsung, product_
     assert len(products_list) == 3
 
     expected_strings = [
-        f"{product_samsung.name}, {product_samsung.price}. Остаток: {product_samsung.quantity} шт.\n",
-        f"{product_iphone.name}, {product_iphone.price}. Остаток: {product_iphone.quantity} шт.\n",
-        f"{product_xiaomi.name}, {product_xiaomi.price}. Остаток: {product_xiaomi.quantity} шт.\n",
+        f"{product_samsung.name}, {product_samsung.price}. Остаток: {product_samsung.quantity} шт.",
+        f"{product_iphone.name}, {product_iphone.price}. Остаток: {product_iphone.quantity} шт.",
+        f"{product_xiaomi.name}, {product_xiaomi.price}. Остаток: {product_xiaomi.quantity} шт.",
     ]
     assert products_list == expected_strings
 
@@ -157,14 +157,53 @@ def test_add_product(category_smartphones, product_tv):
     old_len = len(category_smartphones.products)
     category_smartphones.add_product(product_tv)
     assert len(category_smartphones.products) == old_len + 1
-    expected_line = f"{product_tv.name}, {product_tv.price}. Остаток: {product_tv.quantity} шт.\n"
+    expected_line = f"{product_tv.name}, {product_tv.price}. Остаток: {product_tv.quantity} шт."
     assert category_smartphones.products[-1] == expected_line
 
 
 def test_products_format(category_smartphones, product_samsung, product_iphone, product_xiaomi):
     expected = [
-        f"{product_samsung.name}, {product_samsung.price}. Остаток: {product_samsung.quantity} шт.\n",
-        f"{product_iphone.name}, {product_iphone.price}. Остаток: {product_iphone.quantity} шт.\n",
-        f"{product_xiaomi.name}, {product_xiaomi.price}. Остаток: {product_xiaomi.quantity} шт.\n",
+        f"{product_samsung.name}, {product_samsung.price}. Остаток: {product_samsung.quantity} шт.",
+        f"{product_iphone.name}, {product_iphone.price}. Остаток: {product_iphone.quantity} шт.",
+        f"{product_xiaomi.name}, {product_xiaomi.price}. Остаток: {product_xiaomi.quantity} шт.",
     ]
     assert category_smartphones.products == expected
+
+def test_str_representation(product_apple):
+    """Проверка строкового представления продукта"""
+    expected = "Яблоко, 100.0. Остаток: 5 шт."
+    assert str(product_apple) == expected
+
+def test_add_two_products(product_apple, product_banana):
+    """Проверка сложения полной стоимости двух продуктов"""
+    # Стоимость яблок: 100 * 5 = 500
+    # Стоимость бананов: 80 * 10 = 800
+    # Сумма: 1300
+    assert product_apple + product_banana == 1300.0
+
+def test_add_with_updated_price(product_apple, product_banana):
+    """Сложение должно корректно работать после изменения цены"""
+    product_apple.price = 120.0  # новая цена выше предыдущей
+    # Стоимость яблок: 120 * 5 = 600
+    # Стоимость бананов: 80 * 10 = 800
+    # Сумма: 1400
+    assert product_apple + product_banana == 1400.0
+
+def test_str_representation_2(category_fruits):
+    """Проверка строкового представления категории с суммой количества всех продуктов"""
+    # Яблоко 5 шт + Банан 10 шт = 15
+    expected = "Фрукты, количество продуктов: 15"
+    assert str(category_fruits) == expected
+
+def test_str_after_adding_product(category_fruits):
+    """Проверка обновления строки после добавления нового продукта"""
+    orange = Product("Апельсин", "Сладкие апельсины", 90.0, 7)
+    category_fruits.add_product(orange)
+    # Теперь количество: 5 + 10 + 7 = 22
+    expected = "Фрукты, количество продуктов: 22"
+    assert str(category_fruits) == expected
+
+def test_str_empty_category():
+    """Проверка категории без продуктов"""
+    empty_cat = Category("Пустая", "Нет товаров", [])
+    assert str(empty_cat) == "Пустая, количество продуктов: 0"
