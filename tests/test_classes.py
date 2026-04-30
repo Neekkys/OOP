@@ -260,3 +260,47 @@ def test_add_product_rejects_object_other_class():
     cat = Category("Test", "desc", [])
     with pytest.raises(TypeError):
         cat.add_product(obj)
+
+def test_smartphone_init():
+    s = Smartphone("Samsung", "256GB", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый")
+    # наследованные атрибуты
+    assert s.name == "Samsung"
+    assert s.description == "256GB"
+    assert s.price == 180000.0
+    assert s.quantity == 5
+    # собственные атрибуты
+    assert s.efficiency == 95.5
+    assert s.model == "S23 Ultra"
+    assert s.memory == 256
+    assert s.color == "Серый"
+
+def test_smartphone_is_product():
+    s = Smartphone("A", "desc", 100, 1, 90.0, "M", 64, "red")
+    assert isinstance(s, Product)
+    assert isinstance(s, Smartphone)
+
+def test_smartphone_price_setter_works():
+    s = Smartphone("A", "desc", 1000, 1, 90.0, "M", 64, "red")
+    s.price = 1200  # повышение
+    assert s.price == 1200
+    s.price = -10    # отрицательная — не изменится
+    assert s.price == 1200
+
+def test_lawn_grass_init():
+    g = LawnGrass("Трава", "Элитная", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    assert g.name == "Трава"
+    assert g.description == "Элитная"
+    assert g.price == 500.0
+    assert g.quantity == 20
+    assert g.country == "Россия"
+    assert g.germination_period == "7 дней"
+    assert g.color == "Зеленый"
+
+def test_lawn_grass_is_product():
+    g = LawnGrass("T", "d", 10, 1, "RU", "3d", "green")
+    assert isinstance(g, Product)
+    assert isinstance(g, LawnGrass)
+
+def test_lawn_grass_str_uses_product_str():
+    g = LawnGrass("Трава", "Элитная", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    assert str(g) == "Трава, 500.0. Остаток: 20 шт."
