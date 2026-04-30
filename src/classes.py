@@ -17,10 +17,13 @@ class Product:
 
     @property
     def price(self):
+        """Отображение цены продукта"""
         return self.__price
 
     @price.setter
     def price(self, value):
+        """Сеттер новой цены для продукта. Невозможно установить цену ниже 0.
+        Если новая цена меньше предыдущей, запрашивает подтверждение."""
         if value <= 0:
             print("Цена не должна быть нулевая или отрицательная")
             return
@@ -80,7 +83,9 @@ class Category:
         Category.product_count += len(products) if products else 0
 
     def add_product(self, product_obj):
-        """Добавляет продукт в список продуктов"""
+        """Добавляет продукт в категорию. Принимает только объекты Product или его наследников"""
+        if not isinstance(product_obj, Product):
+            raise TypeError
         self.__products.append(product_obj)
         Category.product_count += 1
 
