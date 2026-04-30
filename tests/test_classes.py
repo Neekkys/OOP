@@ -1,5 +1,6 @@
 import pytest
-from main import Product, Category
+
+from src.classes import Category, LawnGrass, Product, Smartphone
 
 
 def test_product_init(product_samsung):
@@ -207,3 +208,55 @@ def test_str_empty_category():
     """Проверка категории без продуктов"""
     empty_cat = Category("Пустая", "Нет товаров", [])
     assert str(empty_cat) == "Пустая, количество продуктов: 0"
+
+def test_add_same_subclass():
+    """Сложение двух смартфонов (одинаковый подкласс) работает"""
+    s1 = Smartphone("A", "desc", 1000, 2, 90.0, "model", 64, "red")
+    s2 = Smartphone("B", "desc", 2000, 3, 95.0, "model2", 128, "blue")
+    result = s1 + s2
+    # 1000*2 + 2000*3 = 2000 + 6000 = 8000
+    assert result == 8000.0
+
+def test_add_different_subclass_raises_typeerror():
+    """Сложение смартфона и газонной травы вызывает TypeError, т.к. типы разные"""
+    s1 = Smartphone("A", "desc", 1000, 1, 90.0, "model", 64, "red")
+    g1 = LawnGrass("Grass", "desc", 100, 5, "RU", "7d", "green")
+    with pytest.raises(TypeError):
+        s1 + g1
+
+def test_add_with_unrelated_type_raises_typeerror():
+    """Сложение продукта с не-продуктом вызывает TypeError"""
+    p = Product("P", "d", 100, 1)
+    with pytest.raises(TypeError):
+        p + "строка"
+    with pytest.raises(TypeError):
+        p + 42
+
+def test_add_product_accepts_subclass():
+    """В категорию можно добавить наследника Product (Smartphone, LawnGrass)"""
+    cat = Category("Test", "desc", [])
+    phone = Smartphone("Phone", "desc", 100, 1, 95.0, "X", 64, "black")
+    grass = LawnGrass("Grass", "desc", 50, 2, "RU", "7d", "green")
+
+    cat.add_product(phone)
+    cat.add_product(grass)
+    assert len(cat.products) == 2
+
+def test_add_product_rejects_non_product():
+    """При попытке добавить не продукт (число, строка, список) вызывается TypeError"""
+    cat = Category("Test", "desc", [])
+    with pytest.raises(TypeError):
+        cat.add_product("не продукт")
+    with pytest.raises(TypeError):
+        cat.add_product(123)
+    with pytest.raises(TypeError):
+        cat.add_product(["список"])
+
+def test_add_product_rejects_object_other_class():
+    """Даже объект другого класса, не связанного с Product, вызывает TypeError"""
+    class SomeForeign:
+        pass
+    obj = SomeForeign()
+    cat = Category("Test", "desc", [])
+    with pytest.raises(TypeError):
+        cat.add_product(obj)
