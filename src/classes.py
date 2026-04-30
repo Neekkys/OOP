@@ -33,6 +33,8 @@ class Product:
 
     @classmethod
     def new_product(cls, product_dict, all_products=None):
+        """Добавляет новый продукт в словарь с продуктами. Если продукт уже есть в словаре,
+        обновляет количество продукта"""
         if all_products:
             for product in all_products:
                 if product_dict["name"] == product.name:
@@ -48,6 +50,14 @@ class Product:
             price=product_dict["price"],
             quantity=product_dict["quantity"],
         )
+
+    def __str__(self):
+        """Строковое отображение продукта в виде {цена}, {стоимость}, {остаток}"""
+        return f'{self.name}, {self.price}. Остаток: {self.quantity} шт.'
+
+    def __add__(self, other):
+        """Полная стоимость 2х товаров с учетом количества на складе"""
+        return self.__price * self.quantity + other.__price * other.quantity
 
 
 class Category:
@@ -67,9 +77,18 @@ class Category:
         Category.product_count += len(products) if products else 0
 
     def add_product(self, product_obj):
+        """Добавляет продукт в список продуктов"""
         self.__products.append(product_obj)
         Category.product_count += 1
 
     @property
     def products(self):
-        return [f"{p.name}, {p.price}. Остаток: {p.quantity} шт.\n" for p in self.__products]
+        return [f"{p.name}, {p.price}. Остаток: {p.quantity} шт." for p in self.__products]
+
+    def __str__(self):
+        """Строковое отображение в виде {Категория}, {общее количество продуктов в классе}"""
+        product_quantity = 0
+        for p in self.__products:
+            product_quantity += p.quantity
+        return f"{self.name}, количество продуктов: {product_quantity}"
+
