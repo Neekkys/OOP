@@ -1,5 +1,6 @@
 import pytest
-from main import Product, Category
+
+from src.classes import Category, LawnGrass, Product, Smartphone
 
 
 def test_product_init(product_samsung):
@@ -207,3 +208,99 @@ def test_str_empty_category():
     """Проверка категории без продуктов"""
     empty_cat = Category("Пустая", "Нет товаров", [])
     assert str(empty_cat) == "Пустая, количество продуктов: 0"
+
+def test_add_same_subclass():
+    """Сложение двух смартфонов (одинаковый подкласс) работает"""
+    s1 = Smartphone("A", "desc", 1000, 2, 90.0, "model", 64, "red")
+    s2 = Smartphone("B", "desc", 2000, 3, 95.0, "model2", 128, "blue")
+    result = s1 + s2
+    # 1000*2 + 2000*3 = 2000 + 6000 = 8000
+    assert result == 8000.0
+
+def test_add_different_subclass_raises_typeerror():
+    """Сложение смартфона и газонной травы вызывает TypeError, т.к. типы разные"""
+    s1 = Smartphone("A", "desc", 1000, 1, 90.0, "model", 64, "red")
+    g1 = LawnGrass("Grass", "desc", 100, 5, "RU", "7d", "green")
+    with pytest.raises(TypeError):
+        s1 + g1
+
+def test_add_with_unrelated_type_raises_typeerror():
+    """Сложение продукта с не-продуктом вызывает TypeError"""
+    p = Product("P", "d", 100, 1)
+    with pytest.raises(TypeError):
+        p + "строка"
+    with pytest.raises(TypeError):
+        p + 42
+
+def test_add_product_accepts_subclass():
+    """В категорию можно добавить наследника Product (Smartphone, LawnGrass)"""
+    cat = Category("Test", "desc", [])
+    phone = Smartphone("Phone", "desc", 100, 1, 95.0, "X", 64, "black")
+    grass = LawnGrass("Grass", "desc", 50, 2, "RU", "7d", "green")
+
+    cat.add_product(phone)
+    cat.add_product(grass)
+    assert len(cat.products) == 2
+
+def test_add_product_rejects_non_product():
+    """При попытке добавить не продукт (число, строка, список) вызывается TypeError"""
+    cat = Category("Test", "desc", [])
+    with pytest.raises(TypeError):
+        cat.add_product("не продукт")
+    with pytest.raises(TypeError):
+        cat.add_product(123)
+    with pytest.raises(TypeError):
+        cat.add_product(["список"])
+
+def test_add_product_rejects_object_other_class():
+    """Даже объект другого класса, не связанного с Product, вызывает TypeError"""
+    class SomeForeign:
+        pass
+    obj = SomeForeign()
+    cat = Category("Test", "desc", [])
+    with pytest.raises(TypeError):
+        cat.add_product(obj)
+
+def test_smartphone_init():
+    s = Smartphone("Samsung", "256GB", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый")
+    # наследованные атрибуты
+    assert s.name == "Samsung"
+    assert s.description == "256GB"
+    assert s.price == 180000.0
+    assert s.quantity == 5
+    # собственные атрибуты
+    assert s.efficiency == 95.5
+    assert s.model == "S23 Ultra"
+    assert s.memory == 256
+    assert s.color == "Серый"
+
+def test_smartphone_is_product():
+    s = Smartphone("A", "desc", 100, 1, 90.0, "M", 64, "red")
+    assert isinstance(s, Product)
+    assert isinstance(s, Smartphone)
+
+def test_smartphone_price_setter_works():
+    s = Smartphone("A", "desc", 1000, 1, 90.0, "M", 64, "red")
+    s.price = 1200  # повышение
+    assert s.price == 1200
+    s.price = -10    # отрицательная — не изменится
+    assert s.price == 1200
+
+def test_lawn_grass_init():
+    g = LawnGrass("Трава", "Элитная", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    assert g.name == "Трава"
+    assert g.description == "Элитная"
+    assert g.price == 500.0
+    assert g.quantity == 20
+    assert g.country == "Россия"
+    assert g.germination_period == "7 дней"
+    assert g.color == "Зеленый"
+
+def test_lawn_grass_is_product():
+    g = LawnGrass("T", "d", 10, 1, "RU", "3d", "green")
+    assert isinstance(g, Product)
+    assert isinstance(g, LawnGrass)
+
+def test_lawn_grass_str_uses_product_str():
+    g = LawnGrass("Трава", "Элитная", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    assert str(g) == "Трава, 500.0. Остаток: 20 шт."
