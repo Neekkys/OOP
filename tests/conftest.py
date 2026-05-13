@@ -53,15 +53,18 @@ def reset_category_counts():
     Category.category_count = 0
     Category.product_count = 0
 
+
 @pytest.fixture
 def product_apple():
     """Продукт 'Яблоко' с ценой 100 и количеством 5"""
     return Product("Яблоко", "Свежие зелёные яблоки", 100.0, 5)
 
+
 @pytest.fixture
 def product_banana():
     """Продукт 'Банан' с ценой 80 и количеством 10"""
     return Product("Банан", "Спелые бананы", 80.0, 10)
+
 
 @pytest.fixture
 def category_fruits(product_apple, product_banana):
