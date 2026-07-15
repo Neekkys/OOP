@@ -70,3 +70,22 @@ def product_banana():
 def category_fruits(product_apple, product_banana):
     """Категория 'Фрукты' с двумя продуктами"""
     return Category("Фрукты", "Сезонные фрукты", [product_apple, product_banana])
+
+
+@pytest.fixture
+def zero_quantity():
+    """Создается продукт с нулевым количеством"""
+    return Product("Банан", "Спелые бананы", 80.0, 0)
+
+@pytest.fixture
+def some_products():
+    """Категория с 3 разными продуктами"""
+    return Category("some_name", "some_descr", [
+        Product("Банан", "Спелые бананы", 200.0, 10),
+        Product("Яблоко", "Свежие зелёные яблоки", 30.0, 5),
+        Product("Арбузы", "Сочные арбузы", 70.0, 6)
+    ])
+
+@pytest.fixture
+def category_zero_product():
+    return Category("some_name", "some_descr", [])
