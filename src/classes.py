@@ -141,6 +141,13 @@ class Category:
             product_quantity += p.quantity
         return f"{self.name}, количество продуктов: {product_quantity}"
 
+    def middle_price(self):
+        """Метод возвращает средний ценник всех товаров на складе, если их нет, то 0"""
+        try:
+            return round(sum([price.price for price in self.__products]) / len(self.__products), 2)
+        except ZeroDivisionError:
+            return 0
+
 
 class Smartphone(Product):
     """Характеристики телефона"""
