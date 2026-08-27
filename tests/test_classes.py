@@ -371,3 +371,16 @@ def test_multiple_creations_log_each(capsys):
     captured = capsys.readouterr()
     expected = "Product(A, desc1, 100, 1)\nProduct(B, desc2, 200, 2)\n"
     assert captured.out == expected
+
+
+def test_zero_quantity():
+    """При создании товара с нулевым количеством возникает исключение"""
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Банан", "Спелые бананы", 80.0, 0)
+
+
+def test_middle_price(some_products, category_zero_product):
+    middle_price = Category.middle_price(some_products)
+    expected_zero = Category.middle_price(category_zero_product)
+    assert middle_price == 100.0
+    assert expected_zero == 0

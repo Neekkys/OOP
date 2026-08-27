@@ -46,11 +46,14 @@ class Product(MixinLogConsole, BaseProduct):
     product_dict: dict
     all_products: list
 
-    def __init__(self, name, description, price, quantity):
+    def __init__(self, name, description, price, quantity=0):
         self.name = name
         self.description = description
         self.__price = price
-        self.quantity = quantity
+        if quantity > 0:
+            self.quantity = quantity
+        else:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__(name, description, price, quantity)
 
     @property
@@ -137,6 +140,13 @@ class Category:
         for p in self.__products:
             product_quantity += p.quantity
         return f"{self.name}, количество продуктов: {product_quantity}"
+
+    def middle_price(self):
+        """Метод возвращает средний ценник всех товаров на складе, если их нет, то 0"""
+        try:
+            return round(sum([price.price for price in self.__products]) / len(self.__products), 2)
+        except ZeroDivisionError:
+            return 0
 
 
 class Smartphone(Product):
